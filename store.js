@@ -31,6 +31,9 @@ const initStore = path => {
 				error: err => console.error('error', err)
 			});
 		},
+		update: (key, value) => {
+			
+		}
 		has: key => new Promise((resolve) => {
 			query.equalTo('identifier', key);
 			query.find({
