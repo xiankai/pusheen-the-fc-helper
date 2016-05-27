@@ -53,9 +53,11 @@ const runPhantomScript = (script, args) => {
 	  	console.error(`stderr: ${data}`);
 	});
 
-	// phantomjs.on('close', (code) => {
-	//   	console.log(`child process exited with code ${code}`);
-	// });
+	phantomjs.on('close', (code) => {
+		if (code !== 0) {
+		  	console.error(`child process exited with code ${code}`);
+		}
+	});
 }
 
 const worlds = [
@@ -145,29 +147,62 @@ for (let world of worlds) {
 	}
 }
 
-const subscribeToPageCount = (world, character_count) => new Promise((resolve, reject) => {
+const fetchPageCount = (world, character_count) => new Promise((resolve, reject) => {
 	let key = `${world}_${character_count}`;
 	let subscriber = createClient();
 	subscriber.subscribe(`totalcount_${key}`);
 	let url = baseURL + generateQuery(world, '', '', character_count);
 	runPhantomScript('./linkshell_totalcount.js', [url, key]);
 	subscriber.on('message', (channel, message) => {
-		resolve(message);
+		resolve({
+			world,
+			character_count,
+			count: message
+		});
 		subscriber.unsubscribe();
 		subscriber.quit();
 	});
 });
 
-Promise.all([
-	keys.map(key => subscribeToPageCount(...key))
-]).then(values => {
-	console.log(values);
+Promise.all(
+	keys.map(key => fetchPageCount(...key))
+).then(values => {
+	let jobs = [];
+	values.map(({ world, character_count, count }) => {
+		let pages = Math.ceil(count / 50);
+		if (pages > 20) {
+			let extraPages = pages - 20;
+			extraPages = extraPages > 20 ? 20 : extraPages;
+
+			let job = Array(extraPages).fill(0).map((e,i) => ({
+				world,
+				character_count,
+				sort: 'asc',
+				page: i+1
+			}));
+			jobs.push(...job);
+
+			pages = 20;
+		}
+
+		let job = Array(pages).fill(0).map((e,i) => ({
+			world,
+			character_count,
+			sort: 'desc',
+			page: i+1
+		}));
+		jobs.push(...job);
+	});
+}).catch(err => {
+	console.error(err)
 });
 
-// list of worlds
-// foreach world
-// foreach endpoint (character_count)
-// get pagecount
-// parse into page numbers and list of crawlers jobs
-// run crawler jobs
-// done???
+// [x] list of worlds
+// [x] foreach world
+// [x] foreach endpoint (character_count)
+// [x] get pagecount
+// [x] parse into page numbers and list of crawlers jobs
+// [] run crawler jobs
+// [] parse linkshell ids and list jobs
+// [] crawl them linkshells
+// [] done???
