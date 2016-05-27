@@ -1,5 +1,5 @@
 // http://zurb.com/forrst/posts/Add_color_to_console_warn_and_console_error_outp-Go0
-var colors = require("colors");
+require('colors');
 function makeColorConsole(fct, color){
   return function(){
     for (var i in arguments)
@@ -135,26 +135,34 @@ const ELEVEN_TO_THIRTY = '11-30';
 const THIRTY_ONE_TO_FIFTY = '31-50';
 const OVER_FIFTY_ONE = '51-';
 const character_counts = [ONE_TO_TEN, ELEVEN_TO_THIRTY, THIRTY_ONE_TO_FIFTY, OVER_FIFTY_ONE];
-const redis = require("redis");
-const client = redis.createClient();
 const baseURL = 'http://na.finalfantasyxiv.com/lodestone/linkshell/';
+const createClient = require('then-redis').createClient;
 
-let jobs = [];
+let keys = [];
 for (let world of worlds) {
 	for (let character_count of character_counts) {
-		let subscriber = redis.createClient();
-		subscriber.on('message', function(channel, message) {
-			console.log(channel, message);
-			subscriber.unsubscribe();
-			subscriber.quit();
-		});
-		let key = `${world}_${character_count}`;
-		subscriber.subscribe(`totalcount_${key}`);
-
-		let url = baseURL + generateQuery(world, '', '', character_count);
-		runPhantomScript('./linkshell_totalcount.js', [url, key]);
+		keys.push([world, character_count]);
 	}
 }
+
+const subscribeToPageCount = (world, character_count) => new Promise((resolve, reject) => {
+	let key = `${world}_${character_count}`;
+	let subscriber = createClient();
+	subscriber.subscribe(`totalcount_${key}`);
+	let url = baseURL + generateQuery(world, '', '', character_count);
+	runPhantomScript('./linkshell_totalcount.js', [url, key]);
+	subscriber.on('message', (channel, message) => {
+		resolve(message);
+		subscriber.unsubscribe();
+		subscriber.quit();
+	});
+});
+
+Promise.all([
+	keys.map(key => subscribeToPageCount(...key))
+]).then(values => {
+	console.log(values);
+});
 
 // list of worlds
 // foreach world
