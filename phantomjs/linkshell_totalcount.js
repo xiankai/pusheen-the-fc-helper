@@ -5,7 +5,7 @@ crawl(function() {
   	var spawn = require("child_process").spawn;
   	spawn('redis-cli', [
   		'PUBLISH',
-  		'pagecount',
+  		'totalcount',
 		result
 	]);
 });
