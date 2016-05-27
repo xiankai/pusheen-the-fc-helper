@@ -8,8 +8,12 @@ function crawl(evaluateFunction, args, cb) {
 			console.log('Unable to access network');
 		} else {
 			if (page.injectJs('jquery.js')) {
-			    var ua = page.evaluate(evaluateFunction, args);
-			    cb(ua);
+				try {
+				    var ua = page.evaluate(evaluateFunction, args);
+				    cb(ua);	
+				} catch (err) {
+					console.error(err);
+				}
 				phantom.exit();
 			} else {
 				console.log('Unable to inject jQuery');
