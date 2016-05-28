@@ -1,5 +1,3 @@
-"use strict";
-
 let S = require('string');
 let bot = require('./bot');
 let { airshipCmds } = require('./lib/airships');

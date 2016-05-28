@@ -23,7 +23,8 @@ const initStore = path => {
 		pull: key => store.lrange(key, 0, -1),
 		set: hashSet,
 		update: hashSet,
-		get: key => store.hget(key),
+		get: key => store.hgetall(key),
+		access: key => store.get(key),
 		has: key => store.exists(key)
 	}
 }
