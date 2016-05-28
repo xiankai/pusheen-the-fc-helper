@@ -74,8 +74,8 @@ const ONE_TO_TEN = '1-10';
 const ELEVEN_TO_THIRTY = '11-30';
 const THIRTY_ONE_TO_FIFTY = '31-50';
 const OVER_FIFTY_ONE = '51-';
-// const character_counts = [ONE_TO_TEN, ELEVEN_TO_THIRTY, THIRTY_ONE_TO_FIFTY, OVER_FIFTY_ONE];
-const character_counts = [OVER_FIFTY_ONE];
+const character_counts = [ONE_TO_TEN, ELEVEN_TO_THIRTY, THIRTY_ONE_TO_FIFTY, OVER_FIFTY_ONE];
+// const character_counts = [OVER_FIFTY_ONE];
 const baseURL = 'http://na.finalfantasyxiv.com/lodestone/linkshell/';
 
 const generateQuery = function(world, sort, direction, character_count, page_number) {

@@ -11,21 +11,21 @@ const doJob = (script, args, cb) => {
 	hookUpProcess(phantomjs, cb);
 }
 
-const listenForJob = () => {
-	console.log('worker created');
+const listenForJob = (retry = true) => {
+	console.log('worker hired');
 	let worker = createClient();
 	worker.send('RPOP', ['jobs']).then(job => {
 		if (job) {
 			let [script, args] = job.split('*');
 			args = JSON.parse(args);
 			doJob(script, args, listenForJob);
-		} else {
+		} else if (retry) {
 			// no mo jobs, one last try to see if any jobs
 			setTimeout(() => {
-				listenForJob();
-			}, 1000)
-			console.log('worker killed off');
-			return;
+				listenForJob(false);
+			}, 10000);
+		} else {
+			console.log('worked fired');
 		}
 	});
 }
