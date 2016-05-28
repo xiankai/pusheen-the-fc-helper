@@ -20,6 +20,7 @@ const initStore = path => {
 
 	return {
 		push: (key, val) => store.lpush(key, val),
+		pull: key => store.lrange(key, 0, -1),
 		set: hashSet,
 		update: hashSet,
 		get: key => store.hget(key),
