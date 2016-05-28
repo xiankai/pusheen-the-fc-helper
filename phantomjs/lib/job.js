@@ -3,7 +3,7 @@ let { createClient } = require('then-redis');
 let spawn = require("child_process").spawn;
 
 const doJob = (script, args, cb) => {
-	let phantomjs = spawn('phantomjs', [
+	let phantomjs = spawn('./node_modules/phantomjs-prebuilt/bin/phantomjs', [
 		'--load-images=false',
 		`phantomjs/${script}`,
 		...args
