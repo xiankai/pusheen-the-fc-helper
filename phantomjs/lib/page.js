@@ -1,6 +1,4 @@
-var url = require('system').args[1];
-
-function crawl(evaluateFunction, args, cb) {
+var crawl = function(url, evaluateFunction, args, cb) {
 	var page = require('webpage').create();
 	page.settings.userAgent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.120 Safari/537.36';
 	page.open(url, function(status) {
@@ -22,4 +20,34 @@ function crawl(evaluateFunction, args, cb) {
 	});
 }
 
-module.exports = crawl;
+var spawn = require('child_process').spawn;
+var publishJob = function(script, args) {
+	var proc = spawn('redis-cli', [
+		'LPUSH',
+		'jobs',
+		script + '*' + JSON.stringify(args)
+	]);
+}
+
+var storeJobResults = function(key, result) {
+	var proc = spawn('redis-cli', [
+		'SET',
+		key,
+		result
+	]);
+}
+
+var pushJobResults = function(key, result) {
+	var proc = spawn('redis-cli', [
+		'RPUSH',
+		key,
+		result
+	]);
+}
+
+module.exports = {
+	crawl: crawl,
+	publishJob: publishJob,
+	storeJobResults: storeJobResults,
+	pushJobResults: pushJobResults
+};

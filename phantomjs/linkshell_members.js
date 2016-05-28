@@ -1,5 +1,13 @@
-var crawl = require('./lib/page');
-crawl(function() {
+var args = require('system').args;
+var constants = require('./lib/constants');
+var page = require('./lib/page');
+
+var id = args[1];
+var pageNo = args[2];
+var world = args[3];
+var url = constants.baseURL + id + '/?page=' + pageNo;
+
+page.crawl(url, function() {
 	var members = [];
   	$('.name_box').parents('td').each(function() {
   		var a = $(this).find('a:first');
@@ -8,30 +16,24 @@ crawl(function() {
 			name: a.text(),
 			rank: 'member'
 		};
-		if ($(this).find('.ic_master')) {
+		if ($(this).find('.ic_master').length > 0) {
 			member.rank = 'master';
-		} else if ($(this).find('.ic_leader')) {
+		} else if ($(this).find('.ic_leader').length > 0) {
 			member.rank = 'leader';
 		}
 		members.push(member);
   	});
 
-  	var world = $('.player_name_brown').text().match(/\((.*)\)/)[1];
-  	return {
-  		members: members,
-  		world: world
-  	};
-}, null, function(result) {
-	var url = require('system').args[1];
-	var linkshell_id = url.match(/\d{17}/);
+  	// var world = $('.player_name_brown').text().match(/\((.*)\)/)[1];
+  	return members;
+}, null, function(members) {
+	// var linkshell_id = url.match(/\d{17}/);
 
-	var spawn = require("child_process").spawn;
-	for (i in result.members) {
-		var member = result.members[i];
-		spawn('redis-cli', [
-			'RPUSH',
-			'members:' + result.world + ':' + member.name + '',
-			linkshell_id + ':' + member.rank
-		]);
+	for (var i in members) {
+		var member = members[i];
+		page.pushJobResults(
+			'members:' + world + ':' + member.name + '',
+			id + ':' + member.rank
+		);
 	}
 });
