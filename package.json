@@ -28,7 +28,8 @@
   },
   "scripts": {
     "test": "mocha --compilers js:babel-core/register -R dot \"tests/**/*.js\"",
-    "watch": "npm test -- --watch"
+    "watch": "npm test -- --watch",
+    "dev": "nodemon -L main.js"
   },
   "repository": {
     "type": "git",
