@@ -31,7 +31,8 @@
     "test": "mocha --compilers js:babel-core/register -R dot \"tests/**/*.js\"",
     "watch": "npm test -- --watch",
     "dev": "nodemon -L main.js",
-    "crawl": "nodejs phantomjs/crawler.js"
+    "prod": "nohup nodejs main.js &",
+    "crawl": "nohup nodejs phantomjs/crawler.js &"
   },
   "repository": {
     "type": "git",
