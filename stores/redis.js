@@ -21,6 +21,7 @@ const initStore = path => {
 	return {
 		push: (key, val) => store.lpush(key, val),
 		pull: key => store.lrange(key, 0, -1),
+		delete: key => store.del(key),
 		set: hashSet,
 		update: hashSet,
 		list: () => store.keys('*'),
