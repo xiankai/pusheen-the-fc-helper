@@ -19,7 +19,11 @@ describe('parsing durations ', () => {
 		['2h20m', 0, 2, 20],
 		['2h2m', 0, 2, 2],
 		['20m', 0, 0, 20],
-		['2m', 0, 0, 2]
+		['2m', 0, 0, 2],
+
+		['36h20m', 1, 12, 20],
+		['48h20m', 2, 0, 20],
+		['90h20m', 3, 18, 20]
 	].map(([time, days, hours, minutes]) => {
 		describe(`parsing ${time}`, () => {
 			it('should parse days correctly', () => {
