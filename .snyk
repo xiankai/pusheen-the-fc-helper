@@ -1,0 +1,14 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.7.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:debug:20170905':
+    - cloudboost > socket.io-client > engine.io-client > debug:
+        patched: '2017-09-28T00:20:04.786Z'
+    - cloudboost > socket.io-client > debug:
+        patched: '2017-09-28T00:20:04.786Z'
+    - phantomjs-prebuilt > extract-zip > debug:
+        patched: '2017-09-28T00:20:04.786Z'
+    - cloudboost > socket.io-client > socket.io-parser > debug:
+        patched: '2017-09-28T00:20:04.786Z'
