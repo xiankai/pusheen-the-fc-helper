@@ -8,15 +8,16 @@
   },
   "dependencies": {
     "cloudboost": "^1.1.363",
-    "discord.js": "^7.0.1",
+    "discord.js": "^11.0.0",
     "firebase": "^2.4.2",
     "moment": "^2.13.0",
     "phantomjs-prebuilt": "^2.1.7",
     "redis": "^2.5.3",
-    "socket.io-client": "^1.4.6",
+    "socket.io-client": "^2.0.2",
     "string": "^3.3.1",
     "system": "^1.0.4",
-    "then-redis": "^2.0.1"
+    "then-redis": "^2.0.1",
+    "snyk": "^1.88.1"
   },
   "devDependencies": {
     "ava": "^0.14.0",
@@ -32,7 +33,9 @@
     "watch": "npm test -- --watch",
     "dev": "nodemon -L main.js",
     "prod": "nohup nodejs main.js &",
-    "crawl": "nohup nodejs phantomjs/crawler.js &"
+    "crawl": "nohup nodejs phantomjs/crawler.js &",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -43,5 +46,6 @@
   "bugs": {
     "url": "https://github.com/xiankai/pusheen-the-fc-helper/issues"
   },
-  "homepage": "https://github.com/xiankai/pusheen-the-fc-helper#readme"
+  "homepage": "https://github.com/xiankai/pusheen-the-fc-helper#readme",
+  "snyk": true
 }
